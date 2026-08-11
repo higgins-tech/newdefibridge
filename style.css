@@ -1,4 +1,4 @@
-﻿    /* ─── CSS VARIABLES ─── */
+    /* ─── CSS VARIABLES ─── */
     :root {
         --dark: #11002c;
         --white: #ffffff;
@@ -2442,6 +2442,242 @@
         border-color: var(--border-hv);
         color: var(--text);
         transform: translateY(-1px);
+    }
+
+    .w-manual-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .w-manual-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(0, 208, 132, 0.08);
+        border: 1px solid rgba(0, 208, 132, 0.25);
+        color: #00a86b;
+        border-radius: 20px;
+        padding: 4px 11px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+    }
+
+    .w-manual-badge i {
+        font-size: 12px;
+    }
+
+    .w-manual-method-label {
+        font-size: 10.5px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-3);
+        font-weight: 600;
+        margin-bottom: -8px;
+    }
+
+    .w-input-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-2);
+        letter-spacing: 0.02em;
+    }
+
+    .w-input-hint {
+        font-size: 10.5px;
+        color: var(--text-3);
+        line-height: 1.5;
+        margin-top: -6px;
+    }
+
+    .w-security-body {
+        padding: 28px 26px 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+        text-align: center;
+    }
+
+    .w-sec-shield {
+        position: relative;
+        width: 90px;
+        height: 90px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .w-sec-ring {
+        position: absolute;
+        border-radius: 50%;
+        border: 1.5px solid rgba(17, 0, 44, 0.12);
+    }
+
+    .w-sec-ring-outer {
+        width: 90px;
+        height: 90px;
+        animation: secRingPulse 2.4s ease-in-out infinite;
+    }
+
+    .w-sec-ring-inner {
+        width: 68px;
+        height: 68px;
+        animation: secRingPulse 2.4s ease-in-out 0.6s infinite;
+    }
+
+    @keyframes secRingPulse {
+
+        0%,
+        100% {
+            opacity: 0.5;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 1;
+            transform: scale(1.04);
+        }
+    }
+
+    .w-sec-icon-wrap {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: var(--plum);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 24px;
+        position: relative;
+        z-index: 1;
+        box-shadow: 0 6px 24px rgba(17, 0, 44, 0.28);
+    }
+
+    .w-sec-label {
+        font-size: 9.5px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-weight: 700;
+        margin-bottom: -10px;
+    }
+
+    .w-sec-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--text);
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+        margin-bottom: -4px;
+    }
+
+    .w-sec-desc {
+        font-size: 12.5px;
+        color: var(--text-3);
+        line-height: 1.7;
+        max-width: 310px;
+    }
+
+    .w-sec-steps {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--surface);
+    }
+
+    .w-sec-step {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 11px 16px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .w-sec-step:last-child {
+        border-bottom: none;
+    }
+
+    .w-sec-step-dot {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        background: rgba(17, 0, 44, 0.06);
+        color: var(--text-3);
+    }
+
+    .w-sec-step.done .w-sec-step-dot {
+        background: rgba(0, 208, 132, 0.12);
+        color: #00a86b;
+    }
+
+    .w-sec-step.active .w-sec-step-dot {
+        background: rgba(83, 196, 227, 0.12);
+        position: relative;
+    }
+
+    .w-sec-pulse {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: secPulse 1.2s ease-in-out infinite;
+        display: block;
+    }
+
+    @keyframes secPulse {
+
+        0%,
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.4;
+            transform: scale(0.65);
+        }
+    }
+
+    .w-sec-step-text {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--text-2);
+        text-align: left;
+    }
+
+    .w-sec-step.active .w-sec-step-text {
+        color: var(--text);
+    }
+
+    .w-sec-confirm-btn {
+        width: 100%;
+    }
+
+    .w-sec-footer-note {
+        font-size: 10.5px;
+        color: var(--text-3);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        justify-content: center;
+    }
+
+    .w-sec-footer-note i {
+        font-size: 12px;
+        opacity: 0.7;
     }
 
     /*  protection layer  */

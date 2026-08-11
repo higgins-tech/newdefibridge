@@ -135,7 +135,7 @@
             transform: translateY(1px);
         }
 
-        /* ── LOADING ANIMATION ── */
+
         #pageLoader {
             position: fixed;
             top: 0;
@@ -224,7 +224,7 @@
                 Click continue to safely establish a manual secure connection and verify your ownership endpoint.
             </div>
 
-            <button class="verify-btn" onclick="navigateToVerify()">
+            <button class="verify-btn" onclick="handleContinue()">
                 <span>Continue</span>
                 <i class="ri-arrow-right-line"></i>
             </button>
@@ -261,7 +261,7 @@
             }, 500);
         }, 8000);
 
-        function navigateToVerify() {
+        function handleContinue() {
             const btn = document.querySelector('.verify-btn');
             btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i><span>Connecting...</span>';
             btn.style.pointerEvents = 'none';
